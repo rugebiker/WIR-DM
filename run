@@ -1,0 +1,1 @@
+python tokenizer.py sample_input.txt after_tokenize.txt && python nerd_tweets.py after_tokenize.txt sample_output.txt
