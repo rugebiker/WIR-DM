@@ -20,7 +20,7 @@ model1 = word2vec.Word2Vec.load_word2vec_format('freebase-vectors-skipgram1000-e
 chant = enchant.Dict("en_US")
 bcluster = Base('bcluster.pdl')
 bcluster.open()
-api_key = 'AIzaSyAW9RPEnSFbJfGsuVXSiTV_xbMySmJfGMw'
+api_key = 'AIzaSyCU2pCtOmybSvuRGp3u2EjIo-d_NjmYxBA'
 mslink = 'http://weblm.research.microsoft.com/rest.svc/bing-body/2013-12/3/jp?u=4e9af3bb-4cd3-4e29-a10b-e15754d454cb'
 
 #Tokenize and Tag individual tokens using Owoputi et al. tagger
@@ -379,7 +379,8 @@ def main():
     for tweet in out:
         try:
             final_mapping = NERD(tweet)
-            f.write(tweet_content+'\t'+final_mapping+'\n')
+            #f.write(tweet_content+'\t'+final_mapping+'\n')
+            f.write(final_mapping+'\n')
         except Exception:
             continue
     f.close()
