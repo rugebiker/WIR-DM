@@ -82,7 +82,7 @@ def printTree(tree, level):
 
 #Execute the jar to tokenize the text in the text file
 def tokenize():
-    cmd = 'java -XX:ParallelGCThreads=2 -Xmx500m -jar '+jarfile +' --output-format conll --no-confidence --model model.ritter_ptb'+' \"'+testfile+'\"'
+    cmd = 'java -XX:ParallelGCThreads=2 -Xmx500m -jar '+jarfile +' --output-format conll --no-confidence --model model.ritter_ptb tmp.txt'
     process = subprocess.Popen(cmd,
                      stdout=subprocess.PIPE,
                      stderr=subprocess.STDOUT,shell=True)
@@ -102,7 +102,7 @@ def posTagger():
     file.close()
 
 def treeBuilder():
-    cmd = 'java -mx1g -cp "stanford-parser.jar:stanford-parser-models.jar" edu.stanford.nlp.parser.lexparser.LexicalizedParser -sentences newline -tokenized -tagSeparator ' + tokenSeparator + ' -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerMethod newCoreLabelTokenizerFactory edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz ' + tokenizedFile
+    cmd = 'java -mx1g -cp "stanford-parser.jar:stanford-parser-models.jar" edu.stanford.nlp.parser.lexparser.LexicalizedParser -sentences newline -tokenized -tagSeparator ' + tokenSeparator + ' -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerMethod newCoreLabelTokenizerFactory edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz tmp2.txt'
     process = subprocess.Popen(cmd,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT,shell=True)
@@ -223,9 +223,23 @@ def checkAPI(term):
 
 
 def main():
-    posTagger()
-    tree = treeBuilder()
-    print leaves(tree)
+    open(tokenizedFile,'w').close()
+
+    with open(testfile,'r') as file:
+        for line in file:
+            tempFile = open('tmp.txt','w')
+            tempFile.write(line)
+            tempFile.close()
+            posTagger()
+
+    with open(tokenizedFile,'r') as file2:
+        for line in file2:
+            tempFile2 = open('tmp2.txt','w')
+            line = line.replace('(','{').replace(')', '}')
+            tempFile2.write(line)
+            tempFile2.close()
+            tree = treeBuilder()
+            #print leaves(tree)
 
     candidates = searchEntities(tree)
     searchQueries(candidates[0], tree)
